@@ -98,11 +98,20 @@ public:
     std::stringstream video_file_name;
     video_file_name << _input_folder << "/" << _camera_name << "/lossless.mov";
 
+    ROS_INFO_STREAM("timestamp_file_name: " << timestamp_file_name.str());
+    ROS_INFO_STREAM("video_file_name: " << video_file_name.str());
+
     // Load timestamp file into memory
     uint64_t stamp_ns;
     std::ifstream infile(timestamp_file_name.str());
+
+    if (infile.is_open())
+    {
+    ROS_INFO_STREAM("Opened timestamp_file_name: " << timestamp_file_name.str());
+    }
     while (infile >> stamp_ns)
     {
+      ROS_INFO_STREAM("Movie timestamp: "<< stamp_ns);
       _timestamps.push_back(stamp_ns);
     }
     ROS_INFO("Loaded timestamps %d", (int)_timestamps.size());
@@ -112,7 +121,7 @@ public:
     _pub = _it.advertise(_output_channel_name, 10);
     _info_pub = _nh.advertise<sensor_msgs::CameraInfo>("camera_info", 10);
 
-    _info_sub = _nh.subscribe("camera_trigger", 10, &republishImages::cb_camera, this);
+    _info_sub = _nh.subscribe("/camera_l/camera_info", 10, &republishImages::cb_camera, this);
 
     ROS_INFO("Finished reading timestamp file");
   };
@@ -126,13 +135,18 @@ public:
     //   return;
     // }
 
-    //ROS_INFO("Publishing Image");
+    ROS_INFO("Publishing Image");
 
     // Only publish an image if the camera_info message timestamp matches a timestamp in the .mov file.
     uint64_t camera_info_timestamp = ((uint64_t)(msg->header.stamp.sec * 1e9) + (uint64_t)msg->header.stamp.nsec);
+    ROS_INFO_STREAM("Camera info timestamp " << camera_info_timestamp);
 
     if (!std::binary_search(_timestamps.begin(), _timestamps.end(), camera_info_timestamp))
-      return;
+      {
+        ROS_INFO("Not matches timestamp");
+        return;
+      }
+      
 
     while (_timestamps.at(_counter) <= camera_info_timestamp)
     {
