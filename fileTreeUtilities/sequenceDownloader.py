@@ -96,6 +96,7 @@ def downloadSequence(flight, environment, datasetFolder):
                     wget.download(src, out=str(dest))
                 except urllib.error.HTTPError as err:
                     print(err)
+                    continue
 
                 # If needed, extract the file
                 if (dest.suffix == ".tar"):
@@ -111,12 +112,13 @@ def downloadSequence(flight, environment, datasetFolder):
     download(append(flight, flightFileList))
     download(append(flight / environment, environmentFiles))
 
-    # Download camera files
+    # Download camera files #"Camera_Left_RGB", "Camera_Left_Gray", "Camera_Right_RGB", "Camera_Right_Gray"
     for cam in cameras:
-        download( [
-            flight / environment / cam / getCamFile(cam),
-            flight / environment / cam / timestampFile
-        ])
+        if cam in ["Camera_Left_Gray", "Camera_Down_Gray"]:
+            download( [
+                flight / environment / cam / getCamFile(cam),
+                flight / environment / cam / timestampFile
+            ])
 
 
 
