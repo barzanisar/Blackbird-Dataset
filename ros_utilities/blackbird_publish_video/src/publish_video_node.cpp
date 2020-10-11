@@ -139,7 +139,7 @@ public:
 
     // Only publish an image if the camera_info message timestamp matches a timestamp in the .mov file.
     uint64_t camera_info_timestamp = ((uint64_t)(msg->header.stamp.sec * 1e9) + (uint64_t)msg->header.stamp.nsec);
-    ROS_INFO_STREAM("Camera info timestamp " << camera_info_timestamp);
+    ROS_INFO("Camera info timestamp %f", msg->header.stamp.toSec());
 
     if (!std::binary_search(_timestamps.begin(), _timestamps.end(), camera_info_timestamp))
       {

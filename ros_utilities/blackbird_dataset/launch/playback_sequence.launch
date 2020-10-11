@@ -1,7 +1,7 @@
 <launch>
   <arg name="flight" default="sphinx/yawConstant/maxSpeed4p0" />
   <arg name="environment" default="Ancient_Egypt_Museum_Room" />
-  <arg name="datasetDir" default="/media/barza/datasets/blackbird_data" />  
+  <arg name="datasetDir" default="/home/barza/blackbird_data" />  
   <!-- Used to slow down playback of dataset -->
   <arg name="playback_rate" default="0.25" />
 
@@ -22,7 +22,7 @@
   <group ns="/uav/camera/">
 
     <!-- Grayscale Cameras -->
-    <node name="Camera_Left_Gray" pkg="blackbird_publish_video" type="blackbird_publish_video_node"  >
+    <node name="Camera_Left_Gray" pkg="blackbird_publish_video" type="blackbird_publish_video_node" output="screen" >
       <param name="camera_name" value="Camera_Left_Gray"/>
       <param name="camera_frame" type="string" value="/uav/camera/left"/> 
       <param name="input_folder" type="string" value="$(arg datasetDir)/$(arg flight)/$(arg environment)"/> 
@@ -48,13 +48,13 @@
     </node> -->
 
     <!-- RGB Cameras -->
-    <node name="Camera_Left_RGB" pkg="blackbird_publish_video" type="blackbird_publish_video_node"  >
+    <!-- <node name="Camera_Left_RGB" pkg="blackbird_publish_video" type="blackbird_publish_video_node"  >
       <param name="camera_name" value="Camera_Left_RGB"/>
       <param name="camera_frame" type="string" value="/uav/camera/left"/> 
       <param name="input_folder" type="string" value="$(arg datasetDir)/$(arg flight)/$(arg environment)"/> 
       <param name="camera_type" value="1" />
-      <!-- <remap from="~/camera_trigger" to="/camera_l/camera_info"/> -->
-    </node>
+      <remap from="~/camera_trigger" to="/camera_l/camera_info"/>
+    </node> -->
 
     <!-- <node name="Camera_Down_RGB" pkg="blackbird_publish_video" type="blackbird_publish_video_node"  >
       <param name="camera_name" value="Camera_Down_RGB"/>
